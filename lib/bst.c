@@ -337,7 +337,7 @@ char * __bst__to_str_breadth_first(BST * tree, char * str) {
     if (tree->root == NULL) {
         return str;
     }
-    BSTNode ** queue = malloc(sizeof(BSTNode) * tree->size+1);
+    BSTNode ** queue = malloc(sizeof(BSTNode *) * (tree->size + 1));
     queue[0] = tree->root;
     int front = 0;
     int back = 1;

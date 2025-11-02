@@ -16,4 +16,4 @@ Did you collaborate with any other students/TAs/Professors? If so, tell us who a
 Did you use any external resources (you do not have to cite in class material)? (Cite them below)  
 - Visualgo (linked lists, BST)
 - GeeksforGeeks (linked list and BST operations)
-- Wikipedia (DFS/BFS)
+- Google (DFS/BFS)
