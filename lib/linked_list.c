@@ -84,7 +84,18 @@ void clear_and_free_linked_list(LinkedList *list) {
  * @param movie the movie to add
  */
 void ll_add_front(LinkedList *list, Movie *movie) {
-    // STUDENT TODO: Implement
+    if (list == NULL || movie == NULL) {
+        return;
+    }
+    node *new_node = __ll__new_node(movie);
+    if (list->head == NULL) {
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        new_node->next = list->head;
+        list->head = new_node;
+    }
+    list->size++;
 }
 
 /**
@@ -98,7 +109,18 @@ void ll_add_front(LinkedList *list, Movie *movie) {
  * @param movie the movie to add
  */
 void ll_add_back(LinkedList *list, Movie *movie) {
-    // STUDENT TODO: Implement
+    if (list == NULL || movie == NULL) {
+        return;
+    }
+    node *new_node = __ll__new_node(movie);
+    if (list->tail == NULL) { // empty list
+        list->head = new_node;
+        list->tail = new_node;
+    } else {
+        list->tail->next = new_node;
+        list->tail = new_node;
+    }
+    list->size++;
 }
 
 
@@ -114,7 +136,28 @@ void ll_add_back(LinkedList *list, Movie *movie) {
  * @param n the index to insert at
  */
 void ll_insert(LinkedList *list, Movie *movie, int n) {
-   // STUDENT TODO: Implement
+   if (list == NULL || movie == NULL) {
+       return;
+   }
+   if (n < 0 || n > list->size) {
+       return; // out of bounds
+   }
+   if (n == 0) {
+       ll_add_front(list, movie);
+       return;
+   }
+   if (n == list->size) {
+       ll_add_back(list, movie);
+       return;
+   }
+   node *prev = list->head;
+   for (int i = 0; i < n - 1; i++) {
+       prev = prev->next;
+   }
+   node *new_node = __ll__new_node(movie);
+   new_node->next = prev->next;
+   prev->next = new_node;
+   list->size++;
 }
 
 
@@ -130,7 +173,17 @@ void ll_insert(LinkedList *list, Movie *movie, int n) {
 Movie * ll_remove_front(LinkedList *list) {
     Movie *movie = NULL;
     
-    // STUDENT TODO: Implement
+    if (list == NULL || list->head == NULL) {
+        return NULL;
+    }
+    node *old_head = list->head;
+    movie = old_head->movie;
+    list->head = old_head->next;
+    if (list->head == NULL) { // list became empty
+        list->tail = NULL;
+    }
+    free(old_head);
+    list->size--;
 
     return movie;
 }
@@ -146,7 +199,26 @@ Movie * ll_remove_front(LinkedList *list) {
  */
 Movie * ll_remove_back(LinkedList *list) {
     Movie* movie = NULL;
-    // STUDENT TODO: Implement
+    if (list == NULL || list->tail == NULL) {
+        return NULL;
+    }
+    if (list->head == list->tail) { // single element
+        movie = list->head->movie;
+        free(list->head);
+        list->head = NULL;
+        list->tail = NULL;
+        list->size--;
+        return movie;
+    }
+    node *prev = list->head;
+    while (prev->next != list->tail) {
+        prev = prev->next;
+    }
+    movie = list->tail->movie;
+    free(list->tail);
+    prev->next = NULL;
+    list->tail = prev;
+    list->size--;
     return movie;
 }
 
@@ -163,7 +235,24 @@ Movie * ll_remove_back(LinkedList *list) {
  */
 Movie * ll_remove(LinkedList *list, int n) {
     Movie * movie = NULL;
-    // STUDENT TODO: Implement
+    if (list == NULL || n < 0 || n >= list->size) {
+        return NULL;
+    }
+    if (n == 0) {
+        return ll_remove_front(list);
+    }
+    if (n == list->size - 1) {
+        return ll_remove_back(list);
+    }
+    node *prev = list->head;
+    for (int i = 0; i < n - 1; i++) {
+        prev = prev->next;
+    }
+    node *to_remove = prev->next;
+    movie = to_remove->movie;
+    prev->next = to_remove->next;
+    free(to_remove);
+    list->size--;
     return movie;
 }
 

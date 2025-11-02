@@ -54,6 +54,10 @@ For this section, you will need to have run the speed compare program and genera
 Add a link from this document to the CSV file you generated. The CSV file must have at least 15 different N values, but
 often can have a lot more depending on what you ran.  
 
+CSV file: [results_10k.csv](results_10k.csv)
+
+Additional run (in progress): [results_100k.csv](results_100k.csv)
+
 ### Analysis
 
 Create *at least three* graphics that each visually explain an aspect of your data related to an operation or data structure. Under each one, explain what the graphic is showing, and what you can conclude from it/what you find interesting about it.
@@ -82,15 +86,21 @@ Create *at least three* graphics that each visually explain an aspect of your da
 > 
 > Make sure you can see the image embedded in the Report.md using [image markdown] when you upload it to github, and get help if it doesn't show! 
 
-#### Graphic 1 (Replace with a descriptive title)
+#### Graphic 1: Add (sorted structures) vs N
+
+![Add (sorted structures) vs N](images/chart_add_sorted.png)
 
 > Insert your comments/observations about the graphic here
 
-#### Graphic 2 (Replace with a descriptive title)
+#### Graphic 2: Search vs N
+
+![Search vs N](images/chart_search.png)
 
 > Insert your comments/observations about the graphic here
 
-#### Graphic 3 (Replace with a descriptive title)
+#### Graphic 3: Front Operations (Vector vs List) vs N
+
+![Front Operations vs N](images/chart_front_ops.png)
 
 > Insert your comments/observations about the graphic here
 

@@ -51,7 +51,7 @@ void __bst__free_node(BSTNode * node, bool clear) {
     if (node == NULL) {
         return;
     }
-    // STUDENT TODO: update this comment - is this, pre, post, or in order traversal?
+    // This is a post-order traversal: free left, then right, then current node
     __bst__free_node(node->left, clear);
     __bst__free_node(node->right, clear);
     if (clear) {
@@ -91,7 +91,20 @@ void clear_and_free_bst(BST * bst) {
  * @param movie the movie to add 
 */
 void __bst__add(BSTNode * curr, Movie * movie) {
-   // STUDENT TODO: implement this function
+   int cmp = compare_movies(movie, curr->movie);
+   if (cmp < 0) {
+       if (curr->left == NULL) {
+           curr->left = __bst__new_node(movie);
+       } else {
+           __bst__add(curr->left, movie);
+       }
+   } else {
+       if (curr->right == NULL) {
+           curr->right = __bst__new_node(movie);
+       } else {
+           __bst__add(curr->right, movie);
+       }
+   }
 }
 /**
  * Adds the given movie into the BST. 
@@ -185,9 +198,17 @@ void bst_remove(BST * bst, Movie * movie) {
  * @return the node that was found
 */
 BSTNode * __bst__find(BSTNode * curr, const char * title) {
-   // STUDENT TODO: implement this function
-
-   return NULL; // STUDENT TODO: update this return statement if needed
+   if (curr == NULL || title == NULL) {
+       return NULL;
+   }
+   int cmp = strcasecmp(title, curr->movie->title);
+   if (cmp == 0) {
+       return curr;
+   } else if (cmp < 0) {
+       return __bst__find(curr->left, title);
+   } else {
+       return __bst__find(curr->right, title);
+   }
 }
 
 /**
@@ -250,7 +271,12 @@ char * __bst__update_str(Movie * movie, char * str) {
  * @return the string that was appended to
 */
 char * __bst__to_str_postorder(BSTNode * curr, char * str) {
-    // STUDENT TODO: implement this function
+    if (curr == NULL) {
+        return str;
+    }
+    str = __bst__to_str_postorder(curr->left, str);
+    str = __bst__to_str_postorder(curr->right, str);
+    str = __bst__update_str(curr->movie, str);
     return str;
 }
 
@@ -266,7 +292,12 @@ char * __bst__to_str_postorder(BSTNode * curr, char * str) {
  *
  */
 char * __bst__to_str_preorder(BSTNode * curr, char * str) {
-    // STUDENT TODO: implement this function
+    if (curr == NULL) {
+        return str;
+    }
+    str = __bst__update_str(curr->movie, str);
+    str = __bst__to_str_preorder(curr->left, str);
+    str = __bst__to_str_preorder(curr->right, str);
     return str;
 }
 
@@ -282,7 +313,12 @@ char * __bst__to_str_preorder(BSTNode * curr, char * str) {
  * @return the string that was appended to
 */
 char * __bst__to_str_inorder(BSTNode * curr, char * str) {
-    // STUDENT TODO: implement this function
+    if (curr == NULL) {
+        return str;
+    }
+    str = __bst__to_str_inorder(curr->left, str);
+    str = __bst__update_str(curr->movie, str);
+    str = __bst__to_str_inorder(curr->right, str);
     return str;
 }
 
@@ -364,7 +400,13 @@ char * bst_to_str(BST * tree, int traversal) {
  * 
 */
 void __bst__to_sorted_array(BSTNode * curr, Movie ** array, int * index) {
-    // STUDENT TODO: implement this function
+    if (curr == NULL) {
+        return;
+    }
+    __bst__to_sorted_array(curr->left, array, index);
+    array[*index] = curr->movie;
+    (*index)++;
+    __bst__to_sorted_array(curr->right, array, index);
 }
 
 /**

@@ -8,6 +8,7 @@
 
 #include "vector.h"
 #include "movie.h"
+#include <strings.h>
 
 
 /**
@@ -24,7 +25,18 @@
  * @param movie the movie to add
 */
 void add_to_sorted_vector(SortedMovieVector * vector, Movie * movie) {
-    // STUDENT TODO: implement this function
+    if (vector == NULL || movie == NULL) {
+        return;
+    }
+    // Linear search to find first index where current > movie, insert before it
+    int insert_index = vector->size; // default to end
+    for (int i = 0; i < vector->size; i++) {
+        if (compare_movies(movie, vector->movies[i]) < 0) {
+            insert_index = i;
+            break;
+        }
+    }
+    vector_insert(vector, movie, insert_index);
 }
 
 /**
@@ -43,9 +55,23 @@ void add_to_sorted_vector(SortedMovieVector * vector, Movie * movie) {
  * @return the movie if found, NULL otherwise
  */
 Movie * find_in_sorted_vector(SortedMovieVector * vector, const char * title) {
-    // STUDENT TODO: implement this function
-
-    // if the movie is not found, return NULL
+    if (vector == NULL || title == NULL || vector->size == 0) {
+        return NULL;
+    }
+    int left = 0;
+    int right = vector->size - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        Movie *mid_movie = vector->movies[mid];
+        int cmp = strcasecmp(title, mid_movie->title);
+        if (cmp == 0) {
+            return mid_movie;
+        } else if (cmp < 0) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
     return NULL;
 }
 
@@ -65,7 +91,21 @@ Movie * find_in_sorted_vector(SortedMovieVector * vector, const char * title) {
  * @return the movie removed, NULL otherwise
  */
 Movie* sorted_vector_remove(SortedMovieVector *vector, const char *title){
-    // STUDENT TODO: implement this function
-
+    if (vector == NULL || title == NULL || vector->size == 0) {
+        return NULL;
+    }
+    int left = 0;
+    int right = vector->size - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        int cmp = strcasecmp(title, vector->movies[mid]->title);
+        if (cmp == 0) {
+            return vector_remove(vector, mid);
+        } else if (cmp < 0) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
     return NULL; // not found
 }
