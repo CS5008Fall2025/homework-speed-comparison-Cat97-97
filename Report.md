@@ -16,13 +16,13 @@ Don't forget to use latex math notation (example in the table).
 
 | -                         | Add/Insert | Remove | Search/Find | Sort   | Add Front | Add Back | Remove Front | Remove Back | Get by Index |
 | ------------------------- |:----------:|:------:|:-----------:|:------:|:---------:|:--------:|:------------:|:-----------:|:------------:|
-| Vector                    | $O(n)$     |        |             |        |           |          |              |             |              |
-| Single Linked List        |            |        |             |        |           |          |              |             |              |
-| Double Linked List        |            |        |             |        |           |          |              |             |              |
-| Sorted Vector             |            |        |             | $O(1)$ | ---       | ---      | ---          | ---         | ---          |
-| Sorted Single Linked List |            |        |             | $O(1)$ | ---       | ---      | ---          | ---         | ---          |
-| Sorted Double Linked List |            |        |             | $O(1)$ | ---       | ---      | ---          | ---         | ---          |
-| Binary Search Tree        |            |        |             |        | ---       | ---      | ---          | ---         | ---          |
+| Vector                    | $O(n)$     | $O(n)$ | $O(n)$      | $O(n\log n)$ | $O(n)$    | $O(n)$  | $O(n)$       | $O(1)$      | $O(1)$       |
+| Single Linked List        | $O(1)$     | $O(1)$ | $O(n)$      | $O(n\log n)$ | $O(1)$    | $O(1)$  | $O(1)$       | $O(n)$      | $O(n)$       |
+| Double Linked List        | $O(1)$     | $O(1)$ | $O(n)$      | $O(n\log n)$ | $O(1)$    | $O(1)$  | $O(1)$       | $O(1)$      | $O(n)$       |
+| Sorted Vector             | $O(n)$     | $O(n)$ | $O(\log n)$ | $O(1)$ | ---       | ---      | ---          | ---         | ---          |
+| Sorted Single Linked List | $O(n)$     | $O(n)$ | $O(n)$      | $O(1)$ | ---       | ---      | ---          | ---         | ---          |
+| Sorted Double Linked List | $O(n)$     | $O(n)$ | $O(n)$      | $O(1)$ | ---       | ---      | ---          | ---         | ---          |
+| Binary Search Tree        | $O(n)$     | $O(n)$ | $O(n)$      | $O(n)$ | ---       | ---      | ---          | ---         | ---          |
 
 For Sort, we are asking for the Big $O$ for taking the current data structure and writing it 'sorted' to a file. However, not the file writes. For example, if you have a vector of 1000 elements, and you want to write it to a file, you would need to sort it first. So, the Big $O$ for this would be the Big $O$ for sorting. For BST, you have to convert the tree to a sequential structure, so the cost of doing that.  
 
@@ -30,20 +30,20 @@ For Sort, we are asking for the Big $O$ for taking the current data structure an
 
 Since the worst case can change considerably based on what sort you use for sorting (if any), list each algorithm below, and specify the algorithm used in your assumption.  For BST, write which  method of traversal you would use to sort it.  
 
-* Vector
-* Single Linked List
-* Double Linked List
+* Vector: Assume Timsort (or mergesort/quicksort hybrid) so $O(n\log n)$ worst case.
+* Single Linked List: Assume mergesort, so $O(n\log n)$ worst case on a list.
+* Double Linked List: Assume mergesort, so $O(n\log n)$ worst case on a list.
 * Sorted Vector - already sorted
 * Sorted Single Linked List - already sorted
 * Sorted Double Linked List - already sorted
-* Binary Search Tree 
+* Binary Search Tree: Inorder traversal to array is $O(n)$; sorting is inherent to inorder on BST.
 
 ### Worst Case vs. Average Case
 
 There are a few functions whose worse case is very different than the average case. Name at least two of them, and explain why the worse case is so much worse than the average case. 
 
-1. 
-2. 
+1. BST search/remove: Worst-case $O(n)$ on a highly skewed tree versus average $O(\log n)$ on a balanced-like tree. Skew creates a linear chain.
+2. SortedVector add: Average behaves near $O(1)$ to $O(k)$ if inserted near the end when mostly sorted; worst-case $O(n)$ due to shifting when inserting near the front.
 
 ## Empirical Analysis - Speed Comparison
 
@@ -90,19 +90,19 @@ Create *at least three* graphics that each visually explain an aspect of your da
 
 ![Add (sorted structures) vs N](images/chart_add_sorted.png)
 
-> Insert your comments/observations about the graphic here
+> BST add grows slowest and near-linearly with log-like behavior vs N; SortedVector and SortedList grow faster. SortedVector outperforms SortedList at higher N due to binary-searchable position plus contiguous memory, but still pays O(n) for shifting. SortedList is linear insertion with list traversal.
 
 #### Graphic 2: Search vs N
 
 ![Search vs N](images/chart_search.png)
 
-> Insert your comments/observations about the graphic here
+> BST and SortedVector searches remain much lower than SortedList. SortedVector shows the typical $O(\log n)$ growth (binary search), BST remains similar when not skewed. SortedList is linear and increases fastest.
 
 #### Graphic 3: Front Operations (Vector vs List) vs N
 
 ![Front Operations vs N](images/chart_front_ops.png)
 
-> Insert your comments/observations about the graphic here
+> LinkedList add/remove front stay very small and scale well ($O(1)$), while Vector add/remove front increase with N due to shifting ($O(n)$). This matches theoretical complexity and explains the widening gap.
 
 ## Critical Thought
 
@@ -133,25 +133,51 @@ For example:
 
 8. What data structure is the fastest for removing elements from the back? Why do you think that is?
 
+```markdown
+1. What is the most surprising result from the data? Why is it surprising?
+   BST add/search remained consistently low even at higher N, which is surprising given worst-case $O(n)$. The randomization avoided skew, so behavior was closer to balanced.
+
+2. What data structure is the fast at adding elements (sorted)? Why do you think that is?
+   BST. Insert is $O(h)$ and with random input behaves near $O(\log n)$; SortedVector/SortedList pay linear cost (shift or traversal).
+
+3. What data structure is the fastest at removing elements (sorted)? Why do you think that is?
+   BST and SortedVector are competitive depending on distribution. SortedVector pays shift cost $O(n)$; BST remove is $O(h)$ and benefits when tree height is small.
+
+4. What data structure is the fastest for searching? Why do you think that is?
+   SortedVector (binary search) and BST. Both are logarithmic on average; SortedList is linear.
+
+5. What data structure is the fastest for adding elements to the front? Why do you think that is?
+   LinkedList. Front add is pointer manipulation $O(1)$; Vector must shift $O(n)$.
+
+6. What data structure is the fastest for adding elements to the back? Why do you think that is?
+   Vector amortized $O(1)$ (append); LinkedList is $O(1)$ with tail. In practice vector append is very fast due to cache locality.
+
+7. What data structure is the fastest for removing elements from the front? Why do you think that is?
+   LinkedList. Removing head is $O(1)$; Vector must shift $O(n)$.
+
+8. What data structure is the fastest for removing elements from the back? Why do you think that is?
+   Vector and double-linked list. Vector pop_back is $O(1)$; single list is $O(n)$ unless doubly-linked.
+```
+
 ### Deeper Thinking
 
 #### Double Linked List vs Single Linked List
 
-1. If you wrote your linked list as a single linked list, removing from the back was expensive. If you wrote it as a double linked list, removing from the back was cheap. Why do you think that is?
+1. Single list has no constant-time access to the predecessor of the tail; removal requires an $O(n)$ traversal. Double list maintains `prev`, so tail removal is $O(1)$.
 
-2. When running most functions, at least ~30% of the tests were worse case scenarios. Why do you think that is? 
+2. The sampling intentionally mixes present and absent keys, forcing a substantial share of misses which are often worst-case paths.
 
-3. What was done in the code to encourage that? 
+3. The `build_sample_indexes` function restricts a portion to indices within the inserted range (~70%) and allows the rest anywhere, ensuring both hits and misses.
 
-4. How did this particularly influence the linked list searches?
+4. For LinkedList search, misses traverse to the end ($O(n)$), so the injected misses disproportionately increase average time.
 
 #### Test Bias
 
-1. The tests were inherently biased towards the BST to perform better due the setup of the experiment. Explain why this is the case.  (hint: think about the randomization of the data, and the worst case scenario for BST).
+1. Randomized insert order tends to keep the BST closer to balanced, so height stays near $O(\log n)$, avoiding its $O(n)$ worst case. This favors BST versus structures with true $O(n)$ operations.
 
-2. What would generate the worst case scenery for a BST?
+2. Inserting already-sorted (monotonic) keys creates a degenerate, skewed tree with height $n$.
 
-3. Researching beyond the module, how would one fix a BST so the worst case scenario matches (or at least i closer to) the average case.[^1^]
+3. Use a self-balancing BST (AVL, Red-Black, Treap, etc.) so height is guaranteed $O(\log n)$.[^1^]
 
 ## Scenario
 
@@ -159,15 +185,15 @@ Fill out the table below. This is a common technical interview topic!
 
 | Structure          | Good to use when                                                                 | Bad to use when                                                                  |
 | ------------------ | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Vector             |                                                                                  |                                                                                  |
-| Linked List        | Good for stacks with frequent front only access                                  |                                                                                  |
-| Sorted Vector      | When values coming in are already mostly sorted and we need quick search access. | When space is limited and the dataset is extremely large causing memory to swap. |
-| Sorted Linked List |                                                                                  |                                                                                  |
-| BST                |                                                                                  | data is presorted                                                                |
+| Vector             | Random access, frequent appends, cache-friendly scans                            | Frequent inserts/removes in the middle/front                                     |
+| Linked List        | Stacks/queues with frequent front-only ops, unpredictable sizes                  | Random access by index; high allocator overhead                                  |
+| Sorted Vector      | Mostly-sorted arrivals, binary-search lookups                                    | Heavy insert/delete workloads; memory constrained shifting                        |
+| Sorted Linked List | Streamed data needs to stay sorted with frequent inserts                         | Lots of searches; needs random access                                            |
+| BST                | Mixed inserts/searches with varied keys; range/inorder traversals                | Data arrives presorted (degenerate BST)                                          |
 
 ## Conclusion
 
-Summarize your findings. Where there any surprises?  What did you end up learning by comparing speeds?
+The empirical results match the theoretical Big O: BST and SortedVector excel at search; LinkedList dominates front operations; Vector dominates back operations and scans. Randomized input keeps the BST effective; inserts into sorted structures highlight the shifting/traversal costs. The most surprising result was how consistently good BST performance stayed across N given randomization. Comparing speeds reinforced when memory locality (Vector) versus pointer flexibility (List) versus structural order (BST) each wins.
 
 ## Technical Interview Practice Questions
 
@@ -175,13 +201,22 @@ For both these questions, are you are free to use what you did as the last secti
 
 1. Select one technical interview question (this module or previous) from the [technical interview list](https://github.com/CS5008-khoury/Resources/blob/main/TechInterviewQuestions.md) below and answer it in a few sentences. You can use any resource you like to answer the question.
 
+   Q: Compare BFS and DFS on a tree in terms of traversal order and space/time.
+
+   A: Both BFS and DFS visit each node once, so time is $O(n)$. BFS uses a queue and explores level by level; its space is $O(w)$ where $w$ is the maximum width of the tree (can be $O(n)$). DFS uses recursion or an explicit stack; its space is $O(h)$ where $h$ is the height (balanced $O(\log n)$, worst $O(n)$). DFS variants (pre/in/postorder) differ in when they process the node relative to children.
+
 2. Select one coding question (this module or previous) from the [coding practice repository](https://github.com/CS5008-khoury/Resources/blob/main/LeetCodePractice.md) and include a c file with that code with your submission. Make sure to add comments on what you learned, and if you compared your solution with others. 
+
+   Included file: `coding_practice_reverse_list.c` (iterative reverse of a singly linked list). Notes in file describe approach and observations.
 
 ## References
 
 Add your references here. A good reference includes an inline citation, such as [1] , and then down in your references section, you include the full details of the reference. Computer Science research often uses [IEEE] or [ACM Reference format].
 
-[1] Reference info, date, etc.
+[1] GeeksforGeeks. Difference Between BFS and DFS. Accessed 2025.
+[2] Wikipedia. Depth-first search; Breadth-first search. Accessed 2025.
+[3] Visualgo. Linked List and BST visualizations. Accessed 2025.
+[4] GNU Make Manual. Accessed 2025.
 
 [^1^]: Implementing a BST with a self-balancing algorithm, such as AVL or Red-Black Trees is a great research paper topic!
 
